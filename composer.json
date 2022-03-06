@@ -1,0 +1,34 @@
+{
+    "name": "ccuffs/uffs-ca-scraping",
+    "description": "Biblioteca para obtensão de calendários acadêmicos da UFFS de forma automatizada",
+    "keywords": ["scrap", "calendar", "uffs", "academic", "composer", "package"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fernando Bevilacqua",
+            "email": "fernando.bevilacqua@uffs.edu.br",
+            "homepage": "https://fernandobevilacqua.com"
+        }
+    ],
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "paquettg/php-html-parser": "^3.1",
+        "composer/ca-bundle": "^1.3"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21"
+    },
+    "bin": [
+        "bin/pest"
+    ],    
+    "scripts": {
+        "test": "./vendor/bin/pest --colors=always"
+    },
+    "autoload": {
+        "psr-4": {
+            "CCUFFS\\Scrap\\": "src/"
+        }
+    }
+}

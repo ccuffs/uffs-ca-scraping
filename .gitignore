@@ -5,3 +5,6 @@ Thumbs.db
 ehthumbs.db
 node_modules/
 .vs/
+# Composer
+composer.phar
+/vendor/
