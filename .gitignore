@@ -5,6 +5,7 @@ Thumbs.db
 ehthumbs.db
 node_modules/
 .vs/
+.phpunit.result.cache
 # Composer
 composer.phar
 /vendor/
