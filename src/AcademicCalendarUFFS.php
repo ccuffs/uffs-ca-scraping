@@ -8,12 +8,20 @@ use Composer\CaBundle\CaBundle;
 class AcademicCalendarUFFS {
     private const UFFS_ACADEMIC_CALENDARS_URLS = 'https://www.uffs.edu.br/institucional/pro-reitorias/graduacao/calendario-academico';
     private $client;
+    private $debug;
 
     public function __construct()
     {
         $this->client = new \GuzzleHttp\Client([
             \GuzzleHttp\RequestOptions::VERIFY => CaBundle::getSystemCaRootBundlePath()
         ]);
+        $this->debug = false;
+    }
+
+    private function debug($text) {
+        if ($this->debug) {
+            echo $text . PHP_EOL;
+        }
     }
 
     private function findMonthContent($text, $months) {
@@ -39,11 +47,18 @@ class AcademicCalendarUFFS {
         }
         return $found == count($arr);
     }
+
+    /**
+     * 
+     */
+    public function setDebug($value) {
+        $this->debug = $value;
+    }
     
     /**
      * 
      */
-    public function parseCalendarByUrl($url) {
+    public function fetchCalendarByUrl($url) {
         $dom = new Dom();
         $dom->loadFromUrl($url, null, $this->client);
     
@@ -84,8 +99,8 @@ class AcademicCalendarUFFS {
             $isCalendarRow = $howManyColumns > 2 && $this->containsAll($rowContent, $weekDaysSample);
             $isEventRow    = $howManyColumns == 2 && !$this->containsAll($rowContent, $weekDaysSample);
     
-            if ($isEventRow) {
-                echo 'Event: ' . $rowContent . PHP_EOL;
+            if ($isEventRow && $currentMonth != '') {
+                $this->debug('Event: ' . $rowContent);
                 $period = trim($columns[0]->innerText);
                 $event = trim($columns[1]->innerText);
                 
@@ -95,9 +110,9 @@ class AcademicCalendarUFFS {
                 ];
             }
     
-            if ($isCalendarRow) {
-                echo 'Calendar: ' . $rowContent . PHP_EOL;
-                echo 'Event: ' . $rowContent . PHP_EOL;
+            if ($isCalendarRow && $currentMonth != '') {
+                $this->debug('Calendar: ' . $rowContent);
+                $this->debug('Event: ' . $rowContent);
     
                 $lastColumn = $columns[count($columns) - 1];
                 $entries = $lastColumn->getChildren();
@@ -113,6 +128,11 @@ class AcademicCalendarUFFS {
     
             if ($isMonthRow) {
                 $currentMonth = trim($row->innerText);
+
+                if (empty($currentMonth)) {
+                    continue;
+                }
+
                 $data[$currentMonth] = [
                     'month' => $this->findMonthContent($currentMonth, $months),
                     'events' => [],
@@ -122,8 +142,14 @@ class AcademicCalendarUFFS {
             }
         }
     
+        $monthsFound = count(array_keys($data));
+
+        if ($monthsFound < 6) {
+            // Provavelmente não é um calendário acadêmico com apenas 6 meses
+            return [];
+        }
+
         return $data;
-        var_dump($data);
     }
     
     /**
@@ -177,9 +203,9 @@ class AcademicCalendarUFFS {
             $text = $entry['text'];
             $url = $entry['url'];
     
-            echo 'Fetching ' . $url . ': ' . $text . PHP_EOL;
+            $this->debug('Fetching ' . $url . ': ' . $text);
     
-            $data = $this->parseCalendarByUrl($url);
+            $data = $this->fetchCalendarByUrl($url);
     
             if (count($data) == 0) {
                 continue;
