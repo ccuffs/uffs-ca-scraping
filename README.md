@@ -1,7 +1,7 @@
 <p align="center">
     <img src=".github/logo.png" title="Logo do projeto"><br />
     <img src="https://img.shields.io/maintenance/yes/2022?style=for-the-badge" title="Status do projeto">
-    <img src="https://img.shields.io/github/workflow/status/ccuffs/uffs-ca-scraping/CI?label=Build&logo=github&logoColor=white&style=for-the-badge" title="Build status">
+    <img src="https://img.shields.io/github/workflow/status/ccuffs/uffs-ca-scraping/ci.uffs.cc?label=Build&logo=github&logoColor=white&style=for-the-badge" title="Build status">
 </p>
 
 # uffs-ca-scraping
@@ -338,7 +338,7 @@ git clone https://github.com/ccuffs/uffs-ca-scraping && cd uffs-ca-scraping
 Instale as dependências:
 
 ```
-git clone https://github.com/ccuffs/uffs-ca-scraping && cd uffs-ca-scraping
+composer install
 ```
 
 Implemente o que for necessário e rode os testes:
